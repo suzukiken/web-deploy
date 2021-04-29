@@ -11,6 +11,18 @@
     "@aws-cdk/aws-s3:grantWriteWithoutAcl": true,
     "@aws-cdk/aws-ecs-patterns:removeDefaultDesiredCount": true,
     "@aws-cdk/aws-rds:lowercaseDbIdentifier": true,
-    "@aws-cdk/aws-efs:defaultEncryptionAtRest": true
+    "@aws-cdk/aws-efs:defaultEncryptionAtRest": true,
+    "basename": "webdeploy",
+    "github_repository_name": "webui",
+    "github_owner_name": "suzukiken",
+    "github_branch_name": "master",
+    "domain": "figmentresearch.com",
+    "subdomain": "webui",
+    "notrhvirginia_acmarn_exportname": "figmentresearch-wildcard-notrhvirginia-acmarn",
+    "github_connection_codestararn_smsecretname": "codepipeline-github-connections-suzukiken",
+    "cognito_idpool_id_exportname": "auth1-cognito-idpool-id",
+    "cognito_userpool_id_exportname": "auth1-cognito-userpool-id",
+    "cognito_userpool_webclient_id_exportname": "auth1-cognito-userpool-webclient-id",
+    "cognito_userpool_fqdn_exportname": "auth1-cognito-userpool-fqdn"
   }
 }
