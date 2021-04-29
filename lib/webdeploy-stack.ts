@@ -191,7 +191,7 @@ export class WebdeployStack extends cdk.Stack {
       handler: "lambda_handler",
       runtime: lambda.Runtime.PYTHON_3_8,
       role: invalidate_role,
-      timeout: cdk.Duration.seconds(10),
+      timeout: cdk.Duration.minutes(5),
       environment: {
         DISTRIBUTION_ID: distribution.distributionId
       }
