@@ -12,6 +12,7 @@ import * as lambda from '@aws-cdk/aws-lambda';
 import { PythonFunction } from '@aws-cdk/aws-lambda-python';
 import * as iam from '@aws-cdk/aws-iam';
 import * as secretsmanager from '@aws-cdk/aws-secretsmanager';
+import * as appsync from '@aws-cdk/aws-appsync';
 
 export class WebdeployStack extends cdk.Stack {
   constructor(scope: cdk.Construct, id: string, props?: cdk.StackProps) {
@@ -31,8 +32,26 @@ export class WebdeployStack extends cdk.Stack {
     const COGNITO_USERPOOL_WEBCLIENT_ID = cdk.Fn.importValue(this.node.tryGetContext('cognito_userpool_webclient_id_exportname'))
     const COGNITO_USERPOOL_DOMAINNAME = cdk.Fn.importValue(this.node.tryGetContext('cognito_userpool_fqdn_exportname'))
     const COGNITO_USERPOOL_URL = 'https://' + subdomain + '.' + domain + '/'
+    const APPSYNC_GRAPHQL_URL = cdk.Fn.importValue(this.node.tryGetContext('appsyncapiurl_exportname'))
 
     const codestararn = secretsmanager.Secret.fromSecretNameV2(this, 'secret', smname).secretValue.toString()
+    
+    const auth_iamrolearn = cdk.Fn.importValue(this.node.tryGetContext('cognito_idpool_auth_iamrolearn_exportname'))
+    const auth_iamrole = iam.Role.fromRoleArn(this, 'auth_iamrole', auth_iamrolearn)
+    const graphqlapiid = cdk.Fn.importValue(this.node.tryGetContext('appsyncapiid_exportname'))
+    const miscapi = appsync.GraphqlApi.fromGraphqlApiAttributes(this, 'miscapi', { graphqlApiId: graphqlapiid })
+    
+    auth_iamrole.attachInlinePolicy(new iam.Policy(this, 'policy', {
+      statements: [
+        new iam.PolicyStatement({
+          effect: iam.Effect.ALLOW,
+          actions: [
+            "appsync:GraphQL"
+          ],
+          resources: [ miscapi.arn + "/*" ]
+        })
+      ]
+    }))
     
     // bucket
     
@@ -95,7 +114,8 @@ export class WebdeployStack extends cdk.Stack {
         COGNITO_USERPOOL_WEBCLIENT_ID: { value: COGNITO_USERPOOL_WEBCLIENT_ID },
         COGNITO_USERPOOL_DOMAINNAME: { value: COGNITO_USERPOOL_DOMAINNAME },
         COGNITO_USERPOOL_SIGNIN_URL: { value: COGNITO_USERPOOL_URL },
-        COGNITO_USERPOOL_SIGNOUT_URL: { value: COGNITO_USERPOOL_URL }
+        COGNITO_USERPOOL_SIGNOUT_URL: { value: COGNITO_USERPOOL_URL },
+        APPSYNC_GRAPHQL_URL: { value: APPSYNC_GRAPHQL_URL },
       }
     })
     
@@ -203,7 +223,7 @@ export class WebdeployStack extends cdk.Stack {
     })
 
     const pipeline = new codepipeline.Pipeline(this, 'pipeline', {
-      //pipelineName: basename + '-pipeline',
+      pipelineName: basename + '-pipeline',
       stages: [
         {
           stageName: 'source',

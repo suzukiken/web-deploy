@@ -23,6 +23,9 @@
     "cognito_idpool_id_exportname": "auth1-cognito-idpool-id",
     "cognito_userpool_id_exportname": "auth1-cognito-userpool-id",
     "cognito_userpool_webclient_id_exportname": "auth1-cognito-userpool-webclient-id",
-    "cognito_userpool_fqdn_exportname": "auth1-cognito-userpool-fqdn"
+    "cognito_userpool_fqdn_exportname": "auth1-cognito-userpool-fqdn",
+    "appsyncapiid_exportname": "miscapi-appsyncapiid-exportname",
+    "appsyncapiurl_exportname": "miscapi-appsyncapiurl-exportname",
+    "cognito_idpool_auth_iamrolearn_exportname": "auth1-cognito-idpool-auth-iamrolearn"
   }
 }
